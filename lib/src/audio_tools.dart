@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
+import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-class AudioTool {
+class AudioTools {
   /// Get duration of audio file, throw Exception when error
   static Future<Duration> getDuration(File file) async {
     String query =
