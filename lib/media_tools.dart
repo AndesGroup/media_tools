@@ -1,3 +1,3 @@
 library media_tools;
 
-export 'src/audio/audio_cutter.dart';
+export 'src/audio_tool.dart';
