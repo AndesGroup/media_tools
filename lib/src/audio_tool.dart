@@ -7,8 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AudioTool {
-  /// Get duration of audio file
-  static Future<Duration?> getDuration(File file) async {
+  /// Get duration of audio file, throw Exception when error
+  static Future<Duration> getDuration(File file) async {
     String query =
         '-i ${file.path} -v quiet -show_entries format=duration -hide_banner -of default=noprint_wrappers=1:nokey=1';
 
