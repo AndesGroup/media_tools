@@ -79,4 +79,35 @@ class VideoTools {
       throw Exception(await session.getLogsAsString());
     }
   }
+
+  /// Return video file after concat of files, throw when error
+  static Future<File> concatVideo(List<File> files) async {
+    final Directory dir = await getTemporaryDirectory();
+    var list =
+        File('${dir.path}/list-${DateTime.now().millisecondsSinceEpoch}.txt');
+
+    var listFile = '';
+    for (var file in files) {
+      listFile += "file '${file.path}'\n";
+    }
+    await list.writeAsString(listFile);
+
+    final outPath =
+        "${dir.path}/concat-${DateTime.now().millisecondsSinceEpoch}.mp4";
+
+    var cmd = '-y -f concat -safe 0 -i ${list.path} -c copy $outPath';
+
+    final session = await FFmpegKit.execute(cmd);
+    final returnCode = await session.getReturnCode();
+    if (ReturnCode.isSuccess(returnCode)) {
+      // SUCCESS
+      return File(outPath);
+    } else if (ReturnCode.isCancel(returnCode)) {
+      // CANCEL
+      throw Exception(await session.getAllLogsAsString());
+    } else {
+      // ERROR
+      throw Exception(await session.getAllLogsAsString());
+    }
+  }
 }

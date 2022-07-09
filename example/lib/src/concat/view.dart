@@ -6,6 +6,7 @@ import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:media_tools/media_tools.dart';
 
 class ConcatPage extends StatefulWidget {
   const ConcatPage({Key? key}) : super(key: key);
@@ -56,7 +57,8 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _onSelectFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null) {
       setState(() {
@@ -68,7 +70,8 @@ class _ConcatPageState extends State<ConcatPage> {
 
   Future<void> _onConcatAudio() async {
     final Directory root = await AppHelper.getRoot('audio_cutter');
-    final outPath = "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp3";
+    final outPath =
+        "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp3";
 
     var cmd = "-i \"concat:${fileSelect.join('|')}\" -acodec copy $outPath";
     var result = await FFmpegKit.execute(cmd);
@@ -86,27 +89,19 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _onConcatVideo() async {
-    final Directory root = await AppHelper.getRoot('audio_cutter');
-    final outPath = "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp4";
-    File textFile = File('${root.path}/files.txt');
-
-    var videos = '';
-    for (var x in fileSelect) {
-      videos += "file '$x'\n";
-    }
-    textFile.writeAsString(videos);
-    var cmd = "-safe 0 -f concat -i ${textFile.path} -c  copy $outPath";
-    print("cmd:$cmd");
-    var result = await FFmpegKit.execute(cmd);
-    bool success = ReturnCode.isSuccess(await result.getReturnCode());
-    if (success) {
-      setState(() => outputFile = outPath);
+    bool s = true;
+    try {
+      final output =
+          await VideoTools.concatVideo(fileSelect.map((e) => File(e)).toList());
+      setState(() => outputFile = output.path);
+    } catch (e) {
+      s = false;
     }
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(success ? "Success" : "Error"),
+          content: Text(s ? "Success" : "Error"),
         ),
       );
   }

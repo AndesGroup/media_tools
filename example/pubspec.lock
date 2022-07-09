@@ -65,7 +65,7 @@ packages:
     source: hosted
     version: "1.2.1"
   ffmpeg_kit_flutter_full:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: ffmpeg_kit_flutter_full
       url: "https://pub.dartlang.org"
@@ -149,6 +149,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
+  media_tools:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.0"
   meta:
     dependency: transitive
     description:

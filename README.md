@@ -6,13 +6,14 @@ A package that provide some functions to handle with media file
 ### Depend on it
 ```dart
 dependencies:
-  media_tools: ^0.0.1
+  media_tools: ^latest
 ```
 
-## Audio Cutter
-Cut any audio clip
+## Functions
+- cut (audio, video), concat (audio, video), getDuration (audio, video), convert video -> audio
+
 ### Usage
-I use the `ffmpeg_kit_flutter` package which requires a higher Android SDK version.
+I use the `ffmpeg_kit_flutter_full` package which requires a higher Android SDK version.
 So please modify your `build.gradle` (app) file as follows to avoid errors.
 
 ```
@@ -23,13 +24,13 @@ defaultConfig {
 }
 ```
 
-`AudioCutter.cutAudio(...)` return audio file path after cutting
+`AudioTools.cutAudio(...)` return audio file path after cutting
 ```dart
-import 'package:media_tools/src/audio/audio_cutter.dart';
+import 'package:media_tools/src/audio_tools.dart';
 ...
 var startPoint = 15.0; // the start time you want
 var endPoint = 45.0; // end time
 var pathToFile = 'path/to/audio-file.mp3'; //path to your file
-var result = await AudioCutter.cutAudio(pathToFile, startPoint, endPoint);
+var result = await AudioTools.cutAudio(pathToFile, startPoint, endPoint);
 ...
 ```
