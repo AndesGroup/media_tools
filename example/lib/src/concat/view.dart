@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:example/src/helpes.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/log.dart';
-import 'package:ffmpeg_kit_flutter/session.dart';
-import 'package:ffmpeg_kit_flutter/statistics.dart';
+import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -40,8 +38,12 @@ class _ConcatPageState extends State<ConcatPage> {
             ),
             const Divider(),
             TextButton(
-              onPressed: _onConcat,
-              child: const Text('Concat'),
+              onPressed: _onConcatAudio,
+              child: const Text('Concat Audio'),
+            ),
+            TextButton(
+              onPressed: _onConcatVideo,
+              child: const Text('Concat Video'),
             ),
             Text(
               outputFile,
@@ -64,12 +66,48 @@ class _ConcatPageState extends State<ConcatPage> {
     }
   }
 
-  Future<void> _onConcat() async {
+  Future<void> _onConcatAudio() async {
     final Directory root = await AppHelper.getRoot('audio_cutter');
     final outPath = "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp3";
 
     var cmd = "-i \"concat:${fileSelect.join('|')}\" -acodec copy $outPath";
-    var t = await FFmpegKit.execute(cmd);
-    print("code result: ${await t.getReturnCode()}");
+    var result = await FFmpegKit.execute(cmd);
+    bool success = ReturnCode.isSuccess(await result.getReturnCode());
+    if (success) {
+      setState(() => outputFile = outPath);
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(success ? "Success" : "Error"),
+        ),
+      );
+  }
+
+  Future<void> _onConcatVideo() async {
+    final Directory root = await AppHelper.getRoot('audio_cutter');
+    final outPath = "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp4";
+    File textFile = File('${root.path}/files.txt');
+
+    var videos = '';
+    for (var x in fileSelect) {
+      videos += "file '$x'\n";
+    }
+    textFile.writeAsString(videos);
+    var cmd = "-safe 0 -f concat -i ${textFile.path} -c  copy $outPath";
+    print("cmd:$cmd");
+    var result = await FFmpegKit.execute(cmd);
+    bool success = ReturnCode.isSuccess(await result.getReturnCode());
+    if (success) {
+      setState(() => outputFile = outPath);
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(success ? "Success" : "Error"),
+        ),
+      );
   }
 }

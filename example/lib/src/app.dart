@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Media Tools Example',
-      home: ConvertPage(),
+      home: ConcatPage(),
     );
   }
 }
