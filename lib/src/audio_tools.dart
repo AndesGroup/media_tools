@@ -51,4 +51,26 @@ class AudioTools {
 
     return result;
   }
+
+  /// Return audio file after concat of files, throw when error
+  static Future<File> concatAudio(List<File> files) async {
+
+    final Directory dir = await getTemporaryDirectory();
+    final outPath = "${dir.path}/concat-${DateTime.now().millisecondsSinceEpoch}.mp3";
+
+    var cmd = '-y -i "concat:${files.join('|')}" -acodec copy $outPath';
+    
+    final session = await FFmpegKit.execute(cmd);
+    final returnCode = await session.getReturnCode();
+    if (ReturnCode.isSuccess(returnCode)) {
+      // SUCCESS
+      return File(outPath);
+    } else if (ReturnCode.isCancel(returnCode)) {
+      // CANCEL
+      throw Exception(await session.getAllLogsAsString());
+    } else {
+      // ERROR
+      throw Exception(await session.getAllLogsAsString());
+    }
+  }
 }
