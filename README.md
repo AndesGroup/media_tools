@@ -1,39 +1,35 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Media Tools
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+A package that provide some functions to handle with media file
 
 ## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
+### Depend on it
 ```dart
-const like = 'sample';
+dependencies:
+  media_tools: ^0.0.1
 ```
 
-## Additional information
+## Audio Cutter
+Cut any audio clip
+### Usage
+I use the `ffmpeg_kit_flutter` package which requires a higher Android SDK version.
+So please modify your `build.gradle` (app) file as follows to avoid errors.
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```
+defaultConfig {
+  ...
+  minSdkVersion 24
+  ...
+}
+```
+
+`AudioCutter.cutAudio(...)` return audio file path after cutting
+```dart
+import 'package:media_tools/src/audio/audio_cutter.dart';
+...
+var startPoint = 15.0; // the start time you want
+var endPoint = 45.0; // end time
+var pathToFile = 'path/to/audio-file.mp3'; //path to your file
+var result = await AudioCutter.cutAudio(pathToFile, startPoint, endPoint);
+...
+```

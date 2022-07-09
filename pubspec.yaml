@@ -1,6 +1,7 @@
 name: media_tools
-description: A new Flutter project.
+description: A package that provide some functions to handle with media file
 version: 0.0.1
+repository: https://github.com/AndesGroup/media_tools
 homepage:
 
 environment:
@@ -12,6 +13,7 @@ dependencies:
     sdk: flutter
 
   ffmpeg_kit_flutter: ^4.5.1
+  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:
