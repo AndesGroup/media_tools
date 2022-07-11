@@ -69,6 +69,22 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _onConcatAudio() async {
+    bool s = true;
+    try {
+      final output =
+          await AudioTools.concatAudio(fileSelect.map((e) => File(e)).toList());
+      setState(() => outputFile = output.path);
+    } catch (e) {
+      s = false;
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(s ? "Success" : "Error"),
+        ),
+      );
+    return;
     final Directory root = await AppHelper.getRoot('audio_cutter');
     final outPath =
         "${root.path}/output${DateTime.now().millisecondsSinceEpoch}.mp3";

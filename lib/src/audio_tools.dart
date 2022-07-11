@@ -18,7 +18,9 @@ class AudioTools {
       try {
         double duration = double.parse(await session.getLogsAsString());
 
-        return Duration(seconds: duration.toInt(), milliseconds: (duration % 1.0 * 1000).toInt());
+        return Duration(
+            seconds: duration.toInt(),
+            milliseconds: (duration % 1.0 * 1000).toInt());
       } catch (e) {
         if (kDebugMode) {
           print(e);
@@ -38,7 +40,8 @@ class AudioTools {
       throw ArgumentError('The starting and ending points cannot be negative');
     }
     if (start > end) {
-      throw ArgumentError('The starting point cannot be greater than the ending point');
+      throw ArgumentError(
+          'The starting point cannot be greater than the ending point');
     }
 
     final Directory dir = await getTemporaryDirectory();
@@ -54,12 +57,13 @@ class AudioTools {
 
   /// Return audio file after concat of files, throw when error
   static Future<File> concatAudio(List<File> files) async {
-
     final Directory dir = await getTemporaryDirectory();
-    final outPath = "${dir.path}/concat-${DateTime.now().millisecondsSinceEpoch}.mp3";
+    final outPath =
+        "${dir.path}/concat-${DateTime.now().millisecondsSinceEpoch}.mp3";
 
-    var cmd = '-y -i "concat:${files.join('|')}" -acodec copy $outPath';
-    
+    var cmd =
+        '-y -i "concat:${files.map((e) => e.path).join('|')}" -acodec copy $outPath';
+
     final session = await FFmpegKit.execute(cmd);
     final returnCode = await session.getReturnCode();
     if (ReturnCode.isSuccess(returnCode)) {
